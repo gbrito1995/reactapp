@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './style.css';
 import {Card} from '../../components/Card'
 
@@ -6,6 +6,22 @@ export function Home() {
 
   const [studentName, setStudentName] = useState();
   const [students, setStudents] = useState([]);
+  const [user, setUser] = useState({name: '', avatar: ''});
+  let i = 0;
+
+  useEffect(() => {
+
+    fetch('https://api.github.com/users/gbrito1995')
+      .then(response => response.json())
+      .then(data => {
+        setUser({
+          name: data.name,
+          avatar: data.avatar_url
+        })
+      })
+      .catch(e => console.log(e)) 
+
+  }, [])
 
   function handleAddStudent(){
 
@@ -25,7 +41,15 @@ export function Home() {
 
   return (
     <div className='container'>
-      <h1>Lista de Presença</h1>
+
+      <header>
+        <h1>Lista de Presença</h1>
+        <div>
+          <strong>{user.name}</strong>
+          <img src={user.avatar} alt="" />
+        </div>
+      </header>
+
       <input 
         type="text" 
         placeholder="Digite um nome"
@@ -38,7 +62,12 @@ export function Home() {
       </button>
 
        {
-         students.map(student => <Card name={student.name} time={student.time}/>)
+         students.map(student => (
+          <Card
+            key={++i} 
+            name={student.name} 
+            time={student.time}
+          />))
        }
 
     </div>
