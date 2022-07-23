@@ -1,31 +1,42 @@
 import React, {useState, useEffect} from 'react';
 import './style.css';
-import {Card} from '../../components/Card'
+import {Card, Icard} from '../../components/Card'
 
 export function Home() {
 
-  const [studentName, setStudentName] = useState();
-  const [students, setStudents] = useState([]);
-  const [user, setUser] = useState({name: '', avatar: ''});
+
+  interface User {
+    name: string;
+    avatar: string;
+  }
+
+  interface ProfileResponse {
+    name: string;
+    avatar_url: string;
+  }
+
+  const [studentName, setStudentName] = useState<string>();
+  const [students, setStudents] = useState<Icard[]>([]);
+  const [user, setUser] = useState<User>({} as User);
   let i = 0;
 
   useEffect(() => {
 
-    fetch('https://api.github.com/users/gbrito1995')
-      .then(response => response.json())
-      .then(data => {
-        setUser({
-          name: data.name,
-          avatar: data.avatar_url
-        })
-      })
-      .catch(e => console.log(e)) 
+    async function fnGetProfile () {
+      const result = await fetch('https://api.github.com/users/gbrito1995');
+      const data = await result.json() as ProfileResponse
 
+      setUser({
+        name: data.name,
+        avatar: data.avatar_url
+      })
+    }
+    fnGetProfile();
   }, [])
 
   function handleAddStudent(){
 
-    const newStudent = {
+    const newStudent:Icard = {
       name: studentName,
       time: new Date().toLocaleTimeString("pt-br",
       {

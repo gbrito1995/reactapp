@@ -1,6 +1,11 @@
 import './style.css'
 
-export function Card({name, time}){
+export interface Icard {
+    name: string | undefined;
+    time: string;
+}
+
+export function Card({name, time}:Icard){
     return (
         <div className='card'>
             <strong>{name}</strong>
